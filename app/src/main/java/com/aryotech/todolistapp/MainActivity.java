@@ -38,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         // 3. Buat Adapter dan masukkan parameter yg dibutuhkan. (context, layout_content,tv,data)
         //      parameter data diambil dari langkah 1.
         arrayAdapter = new ArrayAdapter<String>(this,R.layout.content_list,R.id.tv_todo,data);
-
+        // 4. Set Adapter kepada List View
+        listView.setAdapter(arrayAdapter);
 
     }
     // 1. Siapkan Data
