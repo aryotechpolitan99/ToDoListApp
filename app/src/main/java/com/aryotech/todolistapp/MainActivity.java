@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -52,6 +53,16 @@ public class MainActivity extends AppCompatActivity {
                 onClickFabAdd();
             }
         });
+
+        //7. Buat onItemLongclickListener di list view unutk hapus data
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // panggil method deleteItem()
+                deleteItem(position);
+                return false;
+            }
+        });
     }
 
     //1. siapkan data
@@ -86,6 +97,29 @@ public class MainActivity extends AppCompatActivity {
         dialog.setNegativeButton("Cancel",null);
         dialog.create();
         dialog.show();
-}
+    }
+
+    // 7. buat method delete item untuk menghapus data dari array list dan mengupdate listviewdan mengupdate listview
+    private void deleteItem(int position){// beri paramater position untuk mewadahi position dari listview
+
+       // kontanta untuk menampung data position yang di passing dari item onitemlongclicklistener
+        final int index = position;
+
+        /// buat alert dialog
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Anda yakin menghapus item ?");
+        dialog.setPositiveButton("ya", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // hapus item dari array list data berdasarkan index/position dari item di list view
+                data.remove(index); // index didapat position paramater
+
+                // suruh adapter unutk notify ke listview kalau data telah berubah, lalu merefresh listview
+                arrayAdapter.notifyDataSetChanged();
+            }
+        });
+        dialog.setNegativeButton("Tidak", null);
+        dialog.create().show();
+    }
 }
 
