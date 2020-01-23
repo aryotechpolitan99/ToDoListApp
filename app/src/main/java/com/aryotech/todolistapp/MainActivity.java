@@ -3,6 +3,7 @@ package com.aryotech.todolistapp;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,7 +33,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //1. Siapkan data
-        createTodos();
+        //createTodos();
+
+        //9.2 Panggil method loadPreferences() agar data dari SP dimasukan ke arraylist saat pertama di panggil
+        loadDataFromPreferences();
 
         //2. Buat List View
         listView = findViewById(R.id.lv_list); // define list view
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //7. Buat onItemLongclickListener di list view unutk hapus data
+        //7.1 Buat onItemLongclickListener di list view unutk hapus data
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -90,16 +94,26 @@ public class MainActivity extends AppCompatActivity {
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                data.add(edtTodo.getText().toString()); // tambah data ke object ArrayList data.
+                //8.2 Hitung size dari arraylist data untuk dijadikan calon key unutk SP
+                int newKey = data.size();
+
+                String item = edtTodo.getText().toString();
+                data.add(item); // tambah data ke object arraylist data
                 arrayAdapter.notifyDataSetChanged(); // merefresh list view
+
+                //8.3 Tambahkan data ke SP
+                // panggil method addToSP() untuk menyimpan data ke SP
+                addToSP(newKey,item);
+
+                Toast.makeText(getApplicationContext(),String.valueOf(newKey),Toast.LENGTH_LONG).show();
             }
         });
-        dialog.setNegativeButton("Cancel",null);
+        dialog.setNegativeButton("Batal", null);
         dialog.create();
         dialog.show();
     }
 
-    // 7. buat method delete item untuk menghapus data dari array list dan mengupdate listviewdan mengupdate listview
+    // 7.2 buat method delete item untuk menghapus data dari array list dan mengupdate listviewdan mengupdate listview
     private void deleteItem(int position){// beri paramater position untuk mewadahi position dari listview
 
        // kontanta untuk menampung data position yang di passing dari item onitemlongclicklistener
@@ -120,6 +134,34 @@ public class MainActivity extends AppCompatActivity {
         });
         dialog.setNegativeButton("Tidak", null);
         dialog.create().show();
+    }
+
+    // 8.1 Buat method untuk input data ke Shared Preferences
+    private void addToSP(int key, String item){
+        // buat key untuk SP diambil dari size terakhir array list data
+        String newKey = String.valueOf(key);
+        SharedPreferences todosPref = getSharedPreferences("todosPref",MODE_PRIVATE);
+        SharedPreferences.Editor todosPrefEditor = todosPref.edit();
+        // simpan ke SP dengan key dari size terakhir array list
+        todosPrefEditor.putString(newKey,item);
+        todosPrefEditor.apply();
+        // atau todosPrefEditor.commit();
+
+    }
+
+    //9.1 Load data dari SP
+    //Buat method loadPreferences
+    private void loadDataFromPreferences(){
+        SharedPreferences todosPref = getSharedPreferences("todosPref",MODE_PRIVATE);
+        // cek dalam SP ada data atau tidak
+        if (todosPref.getAll().size() > 0){
+            // masukan semua data di SP ke array list data
+            for (int i = 0; i < todosPref.getAll().size(); i++){
+                String key = String.valueOf(i);
+                String item = todosPref.getString(key, null);
+                data.add(item);
+            }
+        }
     }
 }
 
