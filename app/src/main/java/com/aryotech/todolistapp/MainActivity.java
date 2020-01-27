@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -109,19 +110,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 //8.2 Hitung size dari arraylist data untuk dijadikan calon key unutk SP
                 int newKey = data.size();
-                String item = edtTodo.getText().toString();
+                String item = edtTodo.getText().toString().trim();
 
                 // 13. fitur add data kosong tidak di tambahkan
-                if (item.equals("")){
-                    //data.add(item); // tambah data ke object arraylist data
+                if (TextUtils.isEmpty(item)){
+                    Toast.makeText(getApplicationContext(),"Ga boleh kosong",Toast.LENGTH_LONG).show();
+
+                }
+                else{
+                   data.add(item); // tambah data ke object arraylist data
                     arrayAdapter.notifyDataSetChanged(); // merefresh list view
 
                     //8.3 Tambahkan data ke SP
                     // panggil method addToSP() untuk menyimpan data ke SP
                     addToSP(newKey,item);
-                }
-                else{
-                    Toast.makeText(getApplicationContext(),String.valueOf(newKey),Toast.LENGTH_LONG).show();
                 }
             }
         });
