@@ -82,12 +82,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //1. siapkan data
-    private void createTodos(){
+    /*private void createTodos(){
         data.add("eat");
         data.add("pray");
         data.add("sport");
         data.add("break");
-    }
+    }*/
+
     //6. Buat Method ketika FAB Add di click untuk menambahkan data
     private void onClickFabAdd(){
         //Cara pertama tambah edit text ke dialog
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         edtTodo = view.findViewById(R.id.edt_todo);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Add your list");
+        dialog.setTitle("Mau ngapain");
         dialog.setView(view);
         dialog.setPositiveButton("Add", new DialogInterface.OnClickListener() {
             @Override
@@ -133,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         /// buat alert dialog
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Anda yakin menghapus item ?");
+        dialog.setTitle("Yakin nih mau hapus ?");
         dialog.setPositiveButton("ya", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
