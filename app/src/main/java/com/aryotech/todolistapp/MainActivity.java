@@ -70,6 +70,15 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        // 12.4 Buat OnItemClickListener dan panggil method showDialogEdit()
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Panggil method showDialogEdit()
+                showDialogEdit(position);
+            }
+        });
     }
 
     //1. siapkan data
@@ -204,6 +213,48 @@ public class MainActivity extends AppCompatActivity {
         }*/
         todosPrefEditor.apply();
 
+    }
+
+    // 12.1 Membuat fitur Edit Item
+    //  Buat method untuk menampilkan AlertDialog data yang hendak diedit
+
+    private void showDialogEdit(final int position){
+
+        View view = View.inflate(this,R.layout.dialog_add_view, null);
+
+        //EditText ini dideklarisikan di atas di dalam class
+        edtTodo = view.findViewById(R.id.edt_todo);
+
+        //EditText diisi dengan data dari list view yang dipilih berdasarkan parameter position
+        edtTodo.setText(arrayAdapter.getItem(position)); //diambil dari adapter list view
+        //edtTodo.setText(data.get(position)); //diambil dari array list : alternatif dari cara diatas ini.
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("Coba ganti mau ngapain jadinya ?");
+        dialog.setView(view);
+        dialog.setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                //12.3 Panggil method editItem() di bawah yang telah dibuat pada langkah 12.2
+                editItem(position,edtTodo.getText().toString());
+            }
+        });
+        dialog.setNegativeButton("Batal",null);
+        dialog.create();
+        dialog.show();
+    }
+
+    // 12.2 Buat method untuk mengubah item dengan parameter postition dan text item baru.
+    private void editItem(int position, String newItem){
+        //set data di array dengan value baru berdasarkan index/position
+        data.set(position, newItem);
+
+        //jangan lupa Shared Preferences di generate ulang
+        reGenerateAndSortSP();
+
+        //refresh list view
+        arrayAdapter.notifyDataSetChanged();
     }
 }
 
