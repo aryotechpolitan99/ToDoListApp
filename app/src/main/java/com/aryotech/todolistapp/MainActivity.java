@@ -64,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 // panggil method deleteItem()
                 deleteItem(position);
+
+                //10.2 Panggil method deleteFromSP untuk menghapus data dari Shared Preferences
+                deleteFromSP(position); // Sampai sini akan terjadi error karena key d SP tidak berurutan
                 return false;
             }
         });
@@ -128,6 +131,11 @@ public class MainActivity extends AppCompatActivity {
                 // hapus item dari array list data berdasarkan index/position dari item di list view
                 data.remove(index); // index didapat position paramater
 
+                //11.2 Panggil method reGenerateAndSortSP()
+                //reGenerateAndSortSP();
+                reGenerateAndSortSP();
+
+
                 // suruh adapter unutk notify ke listview kalau data telah berubah, lalu merefresh listview
                 arrayAdapter.notifyDataSetChanged();
             }
@@ -150,18 +158,52 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //9.1 Load data dari SP
-    //Buat method loadPreferences
+    //Buat method loadDataFromPrefrences
     private void loadDataFromPreferences(){
         SharedPreferences todosPref = getSharedPreferences("todosPref",MODE_PRIVATE);
         // cek dalam SP ada data atau tidak
-        if (todosPref.getAll().size() > 0){
+        if (todosPref.getAll().size() > 0){ //2
             // masukan semua data di SP ke array list data
-            for (int i = 0; i < todosPref.getAll().size(); i++){
-                String key = String.valueOf(i);
+            for (int i = 0; i < todosPref.getAll().size(); i++){ // i < 2
+                String key = String.valueOf(i); //i = 1
                 String item = todosPref.getString(key, null);
                 data.add(item);
             }
         }
+    }
+
+    //10.1 Menghapus data dari Shared Preferences
+    // Buat method hapus data dari shared preferences
+    private void deleteFromSP(int position){
+        String key = String.valueOf(position);
+        SharedPreferences todosPref = getSharedPreferences("todosPref",MODE_PRIVATE);
+        SharedPreferences.Editor todosPrefEditor = todosPref.edit();
+        todosPrefEditor.remove(key);
+        todosPrefEditor.apply();
+    }
+
+
+    //11.1 Fix Error di langkah 10 untuk mengurutkan kembali key dan value di dalam Shared Preference
+    private void reGenerateAndSortSP(){
+        SharedPreferences todosPref = getSharedPreferences("todosPref",MODE_PRIVATE);
+        SharedPreferences.Editor todosPrefEditor = todosPref.edit();
+        // hapus semua data di Shared Preference
+        todosPrefEditor.clear();
+        todosPrefEditor.apply();
+
+        // isi ulang Shared Preference dengan data dari array list yang sudah otomatis terurut
+        for(int i = 0; i < data.size();i++){
+            String key = String.valueOf(i);
+            todosPrefEditor.putString(key,data.get(i));
+        }
+        /*int i = 0;
+        for (String item: data) {
+            String key = String.valueOf(i);
+            todosPrefEditor.putString(key,item);
+            i++;
+        }*/
+        todosPrefEditor.apply();
+
     }
 }
 
