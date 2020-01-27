@@ -109,16 +109,20 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 //8.2 Hitung size dari arraylist data untuk dijadikan calon key unutk SP
                 int newKey = data.size();
-
                 String item = edtTodo.getText().toString();
-                data.add(item); // tambah data ke object arraylist data
-                arrayAdapter.notifyDataSetChanged(); // merefresh list view
 
-                //8.3 Tambahkan data ke SP
-                // panggil method addToSP() untuk menyimpan data ke SP
-                addToSP(newKey,item);
+                // 13. fitur add data kosong tidak di tambahkan
+                if (item.equals("")){
+                    //data.add(item); // tambah data ke object arraylist data
+                    arrayAdapter.notifyDataSetChanged(); // merefresh list view
 
-                Toast.makeText(getApplicationContext(),String.valueOf(newKey),Toast.LENGTH_LONG).show();
+                    //8.3 Tambahkan data ke SP
+                    // panggil method addToSP() untuk menyimpan data ke SP
+                    addToSP(newKey,item);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(),String.valueOf(newKey),Toast.LENGTH_LONG).show();
+                }
             }
         });
         dialog.setNegativeButton("Batal", null);
@@ -231,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         //edtTodo.setText(data.get(position)); //diambil dari array list : alternatif dari cara diatas ini.
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Coba ganti mau ngapain jadinya ?");
+        dialog.setTitle("Silakan di ubah ?");
         dialog.setView(view);
         dialog.setPositiveButton("Ubah", new DialogInterface.OnClickListener() {
             @Override

@@ -11,9 +11,9 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:src="@drawable/todolist"/>
+        android:src="@drawable/todolist3"/>
 
 
 </LinearLayout>
